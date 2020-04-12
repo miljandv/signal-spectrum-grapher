@@ -30,6 +30,11 @@ def amplitude_spectrum(n):
 
 
 
+def cosine_n(t,n):
+    hn_k=2*abs(Xn(n))*np.cos(2*np.pi*n*f0*t+amplitude_spectrum(t))
+    return hn_k
+
+
 def phase_spectrum(n):
     phase = 0
     ph = np.sin(n*f0*np.pi*tau)/(n*f0*np.pi*tau)
@@ -77,6 +82,10 @@ def main():
     for i in x_:
         y.append(squareWave(i))
         f.append(fourier(harmonics,i))
+        X_0.append(X0(i))
+        X_1.append(cosine_n(i,2))
+        X_2.append(cosine_n(i,3))
+        X_3.append(cosine_n(i,4))
         a0.append(fourier(1,i))
         a1.append(fourier(2,i))
         a3.append(fourier(4,i))
@@ -85,20 +94,17 @@ def main():
     for i in x_n:    
         amp_spec.append(amplitude_spectrum(i))
         phase_spec.append(phase_spectrum(i))
-        X_0.append(X0(i))
-        X_1.append(Xn(2))
-        X_2.append(Xn(3))
-        X_3.append(Xn(4))
+
     
-    fig, ((ax1,ax2), (ax3, ax4), (ax5, ax6),(ax7, ax8),(ax9, ax10),(ax11, ax12)) = plt.subplots(6, 2)
+    fig, ((ax1,ax2), (ax3, ax4), (ax5, ax6),(ax7, ax8),(ax9, ax10),(ax11, ax12)) = plt.subplots(6, 2,sharex=True)
     fig.suptitle('OTR')
     ax1.plot(x_, y)
-    ax2.stem(x_n, amp_spec, 'tab:orange')
-    ax3.stem(x_n, phase_spec, 'tab:green')
-    ax4.stem(x_n, X_0, 'tab:red')
-    ax5.stem(x_n,X_1)
-    ax6.stem(x_n,X_2)
-    ax7.stem(x_n,X_3)
+    ax2.stem(x_n, amp_spec, 'tab:orange',use_line_collection = True)
+    ax3.stem(x_n, phase_spec, 'tab:green',use_line_collection = True)
+    ax4.plot(x_, X_0, 'tab:red')
+    ax5.plot(x_,X_1)
+    ax6.plot(x_,X_2)
+    ax7.plot(x_,X_3)
     ax8.plot(x_,a0)
     ax9.plot(x_,a1)
     ax10.plot(x_,a3)
@@ -116,10 +122,10 @@ def main():
     ax10.title.set_text('a3')
     ax11.title.set_text('a10')
     ax12.title.set_text('a100')
-    
 
-    for ax in fig.get_axes():
-        ax.label_outer()
+
+    #for ax in fig.get_axes():
+    #    ax.label_outer()
 
     plt.show()
 
