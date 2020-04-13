@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+import argparse
 
 
 T = 1
 pause = 0.25
-harmonics = 6
 f0 = 1/T
+order = 6
 amp = 2
 tau = T-pause
 
@@ -51,7 +51,7 @@ def Xn(n):
 
 
 def fourier(n_max,t):
-    a0 = 0.5
+    a0 = tau-pause
     sum = a0
     for n in range(1,n_max):
         try:
@@ -63,7 +63,17 @@ def fourier(n_max,t):
 
 
 
-def main():
+def main_draw():
+    parser = argparse.ArgumentParser(description='Signal spectrum drawer')
+    parser.add_argument('--T', type=int, default=1, help='Signal period')
+    parser.add_argument('--pause', type=float, default=0.25, help='Signal pause')
+    parser.add_argument('--order', type=int, default=6, help='Order of fourier approximation')
+    parser.add_argument('--amp', type=int, default=2, help='Signal amplitude')
+    opt = parser.parse_args()
+    T = opt.T
+    amp = opt.amp
+    order = opt.order
+    amp = opt.amp
     y = []
     f = []
     X_0 = []
@@ -81,7 +91,7 @@ def main():
     x_n = np.linspace(-5,5,100)
     for i in x_:
         y.append(squareWave(i))
-        f.append(fourier(harmonics,i))
+        f.append(fourier(order,i))
         X_0.append(X0(i))
         X_1.append(cosine_n(i,2))
         X_2.append(cosine_n(i,3))
@@ -124,10 +134,45 @@ def main():
     ax12.title.set_text('a100')
 
 
-    #for ax in fig.get_axes():
-    #    ax.label_outer()
-
     plt.show()
+
+
+def draw_amp_sp():
+    amp_spec = []
+    x_n = np.linspace(-5,5,100)
+    for i in x_n:    
+        amp_spec.append(amplitude_spectrum(i))
+    plt.stem(x_n, amp_spec, 'tab:orange',use_line_collection = True)
+    plt.show()
+
+
+
+def draw_ph_sp():
+    phase_spec = []
+    x_n = np.linspace(-5,5,100)
+    for i in x_n:    
+        phase_spec.append(phase_spectrum(i))
+    plt.stem(x_n, phase_spec, 'tab:orange',use_line_collection = True)
+    plt.show()
+
+
+
+
+def draw_compared():
+    y = []
+    a10 = []
+    x_ = np.linspace(-5,5,1000)
+    for i in x_:
+        y.append(squareWave(i))
+        a10.append(fourier(11,i))
+    plt.plot(x_, y)
+    plt.plot(x_,a10)
+    plt.show()
+
+
+
+def main():
+    main_draw()
 
 
 
